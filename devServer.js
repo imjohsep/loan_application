@@ -1,10 +1,12 @@
 var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
+var webpackMiddleware = require('webpack-dev-middleware')
+var webpackHotMiddleware = require('webpack-hot-middleware')
 var config = require('./webpack.config.dev')
-var historyApiFallback = require('connect-history-api-fallback')
 var dbConfig = require('./config')
 var mongoose = require('mongoose')
+var bodyParser = require('body-parser')
 
 /* Mongo */
 mongoose.connect(dbConfig.database)
@@ -13,31 +15,38 @@ mongoose.connection.on('error', function () {
 })
 
 var app = express()
-require('./router')(app)
+var api = express()
+
+require('./router')(api)
+
+app.use( bodyParser.json() )
+
+/* Register Routes */
+app.use('/api', api)
+
 
 /* Webpack Middleware */
-var compiler = webpack(config)
+const compiler = webpack(config)
+const middleware = webpackMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+    contentBase: 'src',
+    stats: {
+      colors: true,
+      hash: false,
+      timings: true,
+      chunks: false,
+      chunkModules: false,
+      modules: false
+    }
+  })
 
-app.use(historyApiFallback()) // required
+app.use(middleware)
+app.use(webpackHotMiddleware(compiler))
 
-app.use(require('webpack-dev-middleware')(compiler, {
-  publicPath: config.output.publicPath,
-  contentBase: 'src',
-  stats: {
-    colors: true,
-    hash: false,
-    timings: true,
-    chunks: false,
-    chunkModules: false,
-    modules: false
-  }
-}))
-
-app.use(historyApiFallback()) // required duplicate
-
-app.use(require('webpack-hot-middleware')(compiler))
-
-app.use(express.static(path.join(__dirname, '/dist')))
+app.get('*', function(req, res) {
+ res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')))
+ res.end()
+})
 
 app.listen(config._hotPort, 'localhost', function (err) {
   if (err) {

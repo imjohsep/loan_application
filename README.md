@@ -1,54 +1,33 @@
-## Installation
+# Loan Applications
 
-Open up a new terminal tab and run `mongod`
+## Standup
 
-**Installing Mongo**
-```
-brew update
-brew install mongodb
-sudo mkdir -p /data/db
-sudo chown -R $USER /data/db
-```
-**Start and Stop Mongodb**
-```
-brew services start mongodb
-brew services stop mongodb
-```
+Run `npm install` to pull down all of our dependencies.
 
-**Import Data**
-```
-mongoimport --db skycal --collection events --type json --file ./models/seed/04-09-2016.json
-```
+### Start the application
 
-
-## Usage
-
-**Start the application in dev mode with hot-module-replacement**
-```
+```sh
 npm start
 ```
 
-**Run tests**
-```
-npm test
+The webserver will be accessible on [localhost:8000](http://localhost:8000)
+
+### Mongo
+
+Open up a new terminal tab and run `mongo`
+If `mongod` is alread running you will open up a new mongo session.
+
+```sh
+MongoDB shell version: 3.2.4
+connecting to: test
+>
 ```
 
-**Build for production**
-```
-npm run build
-```
+__If not__,  you will need to start mongo with the `mongod` command.
 
-**Run production version**
-```
-npm run build:start
-```
+And if you don't have mongo... you will need to install it.
 
-**Run code style check with standard**
-```
-npm run lint
-```
+## Usage
 
-**Generate code coverage report**
-```
-npm run test:cov
-```
+1. Fill out the application on the home page.
+1. Retrieve the details of an applicaiton by visiting `localhost:8000/loans/:loanId`

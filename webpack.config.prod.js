@@ -16,9 +16,10 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new HtmlWebpackPlugin({
-      template: 'src/index.tpl.html',
+      template: 'src/index.html',
       inject: 'body',
-      filename: 'index.html'
+      filename: 'index.html',
+      favicon  : 'public/favicon.ico'
     }),
     new ExtractTextPlugin('[name]-[hash].min.css'),
     new webpack.optimize.UglifyJsPlugin({

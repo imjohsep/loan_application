@@ -1,84 +1,69 @@
 var _ = require('lodash')
-var Event = require('./models/event')
-
-/* Utils */
-
-// Group events by year-month-day key
-function groupEvents(events) {
-  var grouping = {}
-
-  _.map(events, function(event) {
-    var key = event._id.date.year + '-' + event._id.date.month + '-' + event._id.date.day
-
-    if (grouping[key] === undefined) {
-        grouping[key] = []
-    }
-
-    grouping[key].push(event._id)
-  })
-
-  return grouping
-}
+var Loan = require('./models/loan')
 
 /* Routes */
-
-
 module.exports = function (app) {
-  // Events
-  app.get('/api/events', function (req, res) {
-    Event.find({}, function (err, events) {
-      if (err) res.send([])
-      res.send(events)
+  
+    app.use(function(req, res, next) {
+        next()
     })
-  })
 
-  // Upcoming Events
-  app.get('/api/events/upcoming', function (req, res) {
-    var now = new Date()
-    var end_range = new Date()
-    end_range.setDate(end_range.getDate() + 7)
-    Event.find({occurrence_at: {$gte: now, $lte: end_range}}).sort('occurrence_at').limit(4).exec(function (err, events) {
-      if (err) res.send([])
-      res.send(events)
+    app.get('/', function(req, res) {
+        res.json({ message: 'Loan API' })
     })
-  })
 
-  // Grouped Events
-  app.get('/api/events/grouped', function (req, res) {
-    Event.aggregate({
-      $group: {
-        _id: {
-          date: {
-            year: {$year: "$occurrence_at"},
-            month: {$month: "$occurrence_at"},
-            day: {$dayOfMonth: "$occurrence_at"}
-          },
-          occurrence_at: "$occurrence_at",
-          description: "$description",
-          uid: "$_id"
-        },
-      }
-    }, {
-      $sort: {
-        "_id.date.year": 1,
-        "_id.date.month": 1,
-        "_id.date.day": 1,
-      }
-    }).exec(function (err, events) {
-      if (err) res.send({'error': err})
+    app.get('/loans/:loanId', function(req, res) {
+        var loanId = req.params.loanId
+        Loan.findOne({_id: loanId}).exec(function(err, loan) {
+            if (err) res.send(err)
+            res.json(loan)
+        })
+    })
 
-      var groupedEvents = {}
-      _.map(events, function(event) {
-        var key = event._id.date.year + '-' + event._id.date.month + '-' + event._id.date.day
-
-        if (groupedEvents[key] === undefined) {
-            groupedEvents[key] = []
+    /**
+     * Create Loan Application
+     * <host>/api/loans (POST)
+     * 
+     * Request Body
+     * propertyValue
+     * loanAmount
+     * ssn
+     * 
+     * Response - JSON
+     * Loan ID
+     * Loan Status (Accepted, Rejected, etc.)
+     */
+    app.post('/loans', function(req, res) {
+        var body = req.body
+        var data = {loanId: null, loanStatus: null}
+        
+        // Validate application
+        if ((body.loanAmount / body.propertyValue) > .40) {
+            data.loanStatus = 'Rejected'
+        } else {
+            data.loanStatus = 'Accepted'
         }
+        
+        // Need to hash SSN
+        
+        // Create new entry of loan application
+        var loan = new Loan({
+            loanAmount: body.loanAmount,
+            propertyValue: body.propertyValue,
+            ssn: body.ssn,
+            loanStatus: data.loanStatus
+        })
 
-        groupedEvents[key].push(event._id)
-      })
+        data.loanId = loan._id
 
-      res.send(groupedEvents)
+        // Validate and save loan 
+        loan.save(function(err) {
+            if (err) {
+                res.send(err)
+            } else {
+                res.json(data)
+            }
+        })
+
     })
-  })
 }

@@ -1,5 +1,4 @@
 @import variables
-@import calendar
 @import media
 
 #root
@@ -51,12 +50,12 @@ a
 
     @include media(except-handhelds)
         align-items: center
-        background-image: -webkit-linear-gradient(left, rgba(5,10,54,1) 0%, rgba(35,117,172,1) 100%)
-        background-image: -o-linear-gradient(left, rgba(5,10,54,1) 0%, rgba(35,117,172,1) 100%)
-        background-image: linear-gradient(to right, rgba(5,10,54,1) 0%, rgba(35,117,172,1) 100%)
+        background-image: -webkit-linear-gradient(45deg, #4cb2d4 0%, #88c542 100%)
+        background-image: -o-linear-gradient(45deg, #4cb2d4 0%, #88c542 100%)
+        background-image: linear-gradient(45deg, #4cb2d4 0%, #88c542 100%)
 
 .main-view
     @include media(except-handhelds)
         background-color: $main-container-background
         border-radius: 6px
-        padding: 20px
+        padding: 30px 40px

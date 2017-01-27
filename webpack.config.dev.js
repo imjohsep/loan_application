@@ -15,9 +15,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/index.tpl.html',
+      template: 'src/index.html',
       inject: 'body',
-      filename: 'index.html'
+      filename: 'index.html',
+      favicon  : 'public/favicon.ico'
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
@@ -46,7 +47,7 @@ module.exports = {
       test: /\.svg$/, 
       loader: 'file',
       include: 'src/img'
-    }],
+    }]
   },
   _hotPort: 8000,
   postcss: [

@@ -1,13 +1,13 @@
 {
-  "name": "SkyCal",
+  "name": "loan_application",
   "version": "0.0.1",
-  "description": "Calendar app of astronomical events.",
+  "description": "Loan applications",
   "private": true,
   "author": "Joseph Watters",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/imjohspe/skycal.git"
+    "url": ""
   },
   "main": "index.js",
   "scripts": {
@@ -56,15 +56,24 @@
     }
   },
   "dependencies": {
-    "fastclick": "^1.0.6",
+    "better-npm-run": "0.0.7",
+    "body-parser": "^1.16.0",
+    "es6-promise": "^4.0.5",
     "express": "^4.13.4",
+    "fastclick": "^1.0.6",
+    "formsy-material-ui": "^0.5.3",
+    "formsy-react": "^0.18.1",
+    "isomorphic-fetch": "^2.2.1",
     "jquery": "^2.2.1",
+    "material-ui": "^0.16.7",
     "mongoose": "^4.4.7",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
+    "numeral": "^2.0.4",
+    "react": "^15.4.2",
+    "react-dom": "^15.0.0",
+    "react-input-mask": "^0.7.5",
     "react-router": "^2.0.0",
-    "rimraf": "^2.5.2",
-    "better-npm-run": "0.0.7"
+    "react-tap-event-plugin": "^2.0.0",
+    "rimraf": "^2.5.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.3",
